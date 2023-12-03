@@ -1,0 +1,7 @@
+USE loja_virtual;
+
+CREATE TABLE IF NOT EXISTS produto (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    nome VARCHAR(50) NOT NULL,
+    descricao VARCHAR(255)
+)  ENGINE=INNODB
