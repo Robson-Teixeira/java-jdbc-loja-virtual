@@ -7,27 +7,25 @@ import java.sql.Statement;
 
 import br.com.alura.lojavirtual.factory.ConnectionFactory;
 
-public class TesteListagem {
+public class TesteInsercao {
 
 	public static void main(String[] args) throws SQLException {
 
 		ConnectionFactory connectionFactory = new ConnectionFactory();
-		
+
 		Connection connection = connectionFactory.recuperarConexao();
 
 		Statement statement = connection.createStatement();
-		statement.execute("SELECT * FROM produto"); 
-		// statement.execute retorna true, pois o comando retorna uma lista
+		statement.execute("INSERT INTO produto (nome, descricao) VALUES ('Mouse', 'Mouse sem fio');",
+				Statement.RETURN_GENERATED_KEYS);
+		// statement.execute retorna false, pois o comando NÃO retorna uma lista
+		// Inserindo o Statement.RETURN_GENERATED_KEYS é possível recuperar o(s) dado(s) processado(s)
 
-		ResultSet resultSet = statement.getResultSet();
+		ResultSet resultSet = statement.getGeneratedKeys();
 
 		while (resultSet.next()) {
-			System.out.println("Id: " + resultSet.getInt("id") + 
-					" | Nome: " + resultSet.getString("nome") + 
-					" | Descrição: " + resultSet.getString("descricao"));
+			System.out.println("O id criado foi: " + resultSet.getInt(1)); // Índice da 1ª coluna
 		}
-
-		connection.close();
 
 	}
 
