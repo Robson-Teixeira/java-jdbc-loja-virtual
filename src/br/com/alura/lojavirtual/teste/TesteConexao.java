@@ -1,13 +1,16 @@
 package br.com.alura.lojavirtual.teste;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
+
+import br.com.alura.lojavirtual.factory.ConnectionFactory;
 
 public class TesteConexao {
 
 	public static void main(String[] args) throws SQLException {
 
+		ConnectionFactory connectionFactory = new ConnectionFactory();
+		
 		// Adicionar JAR (Driver)
 		/*
 		 * 1- Baixar JDBC driver conector correspondente. Exemplos:
@@ -21,8 +24,7 @@ public class TesteConexao {
 
 		System.out.println("Abrindo conexão...");
 
-		Connection connection = DriverManager.getConnection(
-				"jdbc:mysql://localhost/loja_virtual?useTimezone=true&serverTimezone=UTC", "root", "root");
+		Connection connection = connectionFactory.recuperarConexao();
 
 		System.out.println("Conexão estabelecida com sucesso!");
 		System.out.println("Fechando conexão...");
