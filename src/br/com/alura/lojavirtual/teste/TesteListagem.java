@@ -17,7 +17,7 @@ public class TesteListagem {
 
 		Statement statement = connection.createStatement();
 		statement.execute("SELECT * FROM produto"); 
-		// statement.execute retorna true, pois o comando retorna uma lista
+		// statement.execute retorna true, pois o comando retorna uma lista (java.sql.ResultSet)
 
 		ResultSet resultSet = statement.getResultSet();
 

@@ -18,7 +18,7 @@ public class TesteInsercao {
 		Statement statement = connection.createStatement();
 		statement.execute("INSERT INTO produto (nome, descricao) VALUES ('Mouse', 'Mouse sem fio');",
 				Statement.RETURN_GENERATED_KEYS);
-		// statement.execute retorna false, pois o comando NÃO retorna uma lista
+		// statement.execute retorna false (insert, update, delete e etc), pois o comando NÃO retorna uma lista (java.sql.ResultSet)
 		// Inserindo o Statement.RETURN_GENERATED_KEYS é possível recuperar o(s) dado(s) processado(s)
 
 		ResultSet resultSet = statement.getGeneratedKeys();
