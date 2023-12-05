@@ -15,13 +15,27 @@ public class TesteInsercaoComParametro {
 		ConnectionFactory connectionFactory = new ConnectionFactory();
 
 		Connection connection = connectionFactory.recuperarConexao();
+		
 		connection.setAutoCommit(false);
 
-		PreparedStatement preparedStatement = connection.prepareStatement(
-				"INSERT INTO produto (nome, descricao) VALUES (?, ?);", Statement.RETURN_GENERATED_KEYS);
+		try {
+			PreparedStatement preparedStatement = connection.prepareStatement(
+					"INSERT INTO produto (nome, descricao) VALUES (?, ?);", Statement.RETURN_GENERATED_KEYS);
 
-		adicionarVariavel("Monitor", "Monitor Ultrawide 26\\\"'); DELETE FROM produto;", preparedStatement);
-		adicionarVariavel("TV", "SmartTV 65\"", preparedStatement);
+			adicionarVariavel("Monitor", "Monitor Ultrawide 26\\\"'); DELETE FROM produto;", preparedStatement);
+			adicionarVariavel("TV", "SmartTV 65\"", preparedStatement);
+
+			connection.commit();
+			System.out.println("Commit realizado!");
+
+			preparedStatement.close();
+			connection.close();
+		} 
+		catch (Exception ex) {
+			ex.printStackTrace();
+			connection.rollback();
+			System.out.println("Rollback realizado!");
+		}
 
 	}
 
@@ -30,6 +44,10 @@ public class TesteInsercaoComParametro {
 
 		preparedStatement.setString(1, nome);
 		preparedStatement.setString(2, descricao); // '); DELETE FROM produto;" será tratado como parte do texto
+		
+		// if (nome.equals("TV")) { // Teste rollback
+		// throw new RuntimeException("Não foi possível adicionar o produto: " + nome);
+		// }
 
 		preparedStatement.execute();
 		// preparedStatement.execute retorna false (insert, update, delete e etc), pois o comando NÃO retorna uma lista (java.sql.ResultSet)
