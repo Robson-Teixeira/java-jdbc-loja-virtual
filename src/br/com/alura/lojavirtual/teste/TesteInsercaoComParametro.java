@@ -12,15 +12,22 @@ public class TesteInsercaoComParametro {
 
 	public static void main(String[] args) throws SQLException {
 
-		String nome = "Monitor";
-		String descricao = "Monitor Ultrawide 26\"'); DELETE FROM produto;";
-
 		ConnectionFactory connectionFactory = new ConnectionFactory();
 
 		Connection connection = connectionFactory.recuperarConexao();
+		connection.setAutoCommit(false);
 
 		PreparedStatement preparedStatement = connection.prepareStatement(
 				"INSERT INTO produto (nome, descricao) VALUES (?, ?);", Statement.RETURN_GENERATED_KEYS);
+
+		adicionarVariavel("Monitor", "Monitor Ultrawide 26\\\"'); DELETE FROM produto;", preparedStatement);
+		adicionarVariavel("TV", "SmartTV 65\"", preparedStatement);
+
+	}
+
+	private static void adicionarVariavel(String nome, String descricao, PreparedStatement preparedStatement)
+			throws SQLException {
+
 		preparedStatement.setString(1, nome);
 		preparedStatement.setString(2, descricao); // '); DELETE FROM produto;" será tratado como parte do texto
 
@@ -33,6 +40,8 @@ public class TesteInsercaoComParametro {
 		while (resultSet.next()) {
 			System.out.println("O id criado foi: " + resultSet.getInt(1)); // Índice da 1ª coluna
 		}
+
+		resultSet.close();
 
 	}
 
