@@ -14,27 +14,25 @@ public class TesteInsercaoComParametro {
 
 		ConnectionFactory connectionFactory = new ConnectionFactory();
 
-		Connection connection = connectionFactory.recuperarConexao();
-		
-		connection.setAutoCommit(false);
+		try (Connection connection = connectionFactory.recuperarConexao()) {
 
-		try {
-			PreparedStatement preparedStatement = connection.prepareStatement(
-					"INSERT INTO produto (nome, descricao) VALUES (?, ?);", Statement.RETURN_GENERATED_KEYS);
+			connection.setAutoCommit(false);
 
-			adicionarVariavel("Monitor", "Monitor Ultrawide 26\\\"'); DELETE FROM produto;", preparedStatement);
-			adicionarVariavel("TV", "SmartTV 65\"", preparedStatement);
+			try (PreparedStatement preparedStatement = connection.prepareStatement(
+					"INSERT INTO produto (nome, descricao) VALUES (?, ?);", Statement.RETURN_GENERATED_KEYS)) {
 
-			connection.commit();
-			System.out.println("Commit realizado!");
+				adicionarVariavel("Monitor", "Monitor Ultrawide 26\\\"'); DELETE FROM produto;", preparedStatement);
+				adicionarVariavel("TV", "SmartTV 65\"", preparedStatement);
 
-			preparedStatement.close();
-			connection.close();
-		} 
-		catch (Exception ex) {
-			ex.printStackTrace();
-			connection.rollback();
-			System.out.println("Rollback realizado!");
+				connection.commit();
+				System.out.println("Commit realizado!");
+
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				connection.rollback();
+				System.out.println("Rollback realizado!");
+			}
+
 		}
 
 	}
@@ -53,13 +51,13 @@ public class TesteInsercaoComParametro {
 		// preparedStatement.execute retorna false (insert, update, delete e etc), pois o comando NÃO retorna uma lista (java.sql.ResultSet)
 		// Inserindo o Statement.RETURN_GENERATED_KEYS é possível recuperar o(s) dado(s) processado(s)
 
-		ResultSet resultSet = preparedStatement.getGeneratedKeys();
+		try (ResultSet resultSet = preparedStatement.getGeneratedKeys()) {
 
-		while (resultSet.next()) {
-			System.out.println("O id criado foi: " + resultSet.getInt(1)); // Índice da 1ª coluna
+			while (resultSet.next()) {
+				System.out.println("O id criado foi: " + resultSet.getInt(1)); // Índice da 1ª coluna
+			}
+
 		}
-
-		resultSet.close();
 
 	}
 
