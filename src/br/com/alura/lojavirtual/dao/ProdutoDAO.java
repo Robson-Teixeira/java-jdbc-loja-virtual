@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.alura.lojavirtual.modelo.Categoria;
 import br.com.alura.lojavirtual.modelo.Produto;
 
 public class ProdutoDAO {
@@ -66,6 +67,31 @@ public class ProdutoDAO {
 
 		return produtos;
 
+	}
+
+	public List<Produto> buscar(Categoria categoria) throws SQLException {
+		
+		List<Produto> produtos = new ArrayList<Produto>();
+
+		String sql = "SELECT * FROM produto WHERE categoria_id = ?;";
+
+		try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+			preparedStatement.setInt(1, categoria.getId());
+			preparedStatement.execute();
+
+			try (ResultSet resultSet = preparedStatement.getResultSet()) {
+
+				while (resultSet.next()) {
+					produtos.add(new Produto(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3)));
+				}
+
+			}
+
+		}
+
+		return produtos;		
+		
 	}
 
 }
